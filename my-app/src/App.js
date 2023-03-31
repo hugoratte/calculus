@@ -3,14 +3,16 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { red, green } from 'ansi-colors';
 
+
+// Parse the string operations to get the result
 const resultOperation = (operations) => {
   const [num1, operator, num2] = operations.split(' ');
 
-  // Conversion des nombres en type numérique
+  // Conversion of numbers to integer
   const n1 = parseFloat(num1);
   const n2 = parseFloat(num2);
 
-  // Résolution de l'opération en fonction de l'opérateur
+  // Resolution of the operations
   switch (operator) {
     case '+':
       return n1 + n2;
@@ -25,6 +27,7 @@ const resultOperation = (operations) => {
   }
 };
 
+
 const App = () => {
   const [counter, setCounter] = useState(0);
   const [inputValue, setInputValue] = useState('');
@@ -37,23 +40,32 @@ const App = () => {
   const [listResponses, setListResponses] = useState([]);
   const [Details, setDetails] = useState(false);
 
+  // Function call when we use the touch enter or when we click on the button Valid
+  // Comparison between the result of the operation and our response
   const handleSubmit = () => {
     const result = resultOperation(operations);
+
+    // Response that is not an integer
     if (inputValue === '') {
       console.log("Please enter a number");
       setCounter(2);
     }
+
+    // Comparison true
     else if (parseInt(inputValue) === result) {
       setGame(game + 1);
       listResponses.push("Well done! Your answer " + inputValue + " is correct for " + operations);
       setGood(good + 1);
       setCounter(1);
     }
+    // Comparison false
     else {
       setGame(game + 1);
       listResponses.push("Your answer " + inputValue + " is wrong for " + operations);
       setCounter(-1);
     }
+
+    // limit of game
     if (game === 9) {
       setIsGameFinished(true);
       setListQuestions([]);
@@ -61,10 +73,13 @@ const App = () => {
 
   }
 
+  // Creates a new operations for mode easy after the comparing the old one
   const handleNewOperationEasy = () => {
     const num1 = Math.floor(Math.random() * (10 - 0 + 1)) + 0
     const num2 = Math.floor(Math.random() * (10 - 0 + 1)) + 0
     const op = num1 + " + " + num2 + " = ?";
+
+    // Check if the operations has not already been proposed
     if (listQuestions.includes(op)) {
       console.log("doublon");
       handleNewOperationEasy();
@@ -74,20 +89,27 @@ const App = () => {
     setInputValue('');
   }
 
+  // Creates a new operations for mode hard after the comparing the old one
   const handleNewOperationHard = () => {
     let num1 = Math.floor(Math.random() * (10 - 0 + 1)) + 0;
     let num2 = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
+
     const random = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
     let op = '';
+
+    // random number, if random equal to 0 
+    // so the operation will be a multiplication
     if (random === 0) {
       op = num1 + " * " + num2 + " = ?";
     }
+    // else, the operation will be a soustraction
     else {
       num1 = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
       num2 = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
       op = num1 + " - " + num2 + " = ?";
     }
 
+    // check if the operation has already been proposed 
     if (listQuestions.includes(op)) {
       console.log("doublon");
       handleNewOperationHard();
@@ -97,6 +119,7 @@ const App = () => {
     setInputValue('');
   }
 
+  // call the specific handle
   const handleNewOperation = () => {
     if (selectedMode === 'easy')
       handleNewOperationEasy();
@@ -104,6 +127,7 @@ const App = () => {
       handleNewOperationHard();
   }
 
+  // call the handleNewOperation() after the answer of the old operation
   useEffect(() => {
     if (counter === 1 || counter === -1) {
       setTimeout(() => {
@@ -118,11 +142,13 @@ const App = () => {
     }
   }, [counter]);
 
+  // function call when we choose the mode easy
   const handleEasyMode = () => {
     setSelectedMode('easy');
     handleNewOperationEasy();
   };
 
+  // function call when we choose the mode hard
   const handleHardMode = () => {
     setSelectedMode('hard');
     handleNewOperationHard();
